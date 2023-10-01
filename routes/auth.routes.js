@@ -2,6 +2,8 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
+const crypto = require("crypto");
+const { sendVerificationMail } = require("../config/sendVerificationMail");
 
 const router = express.Router();
 const saltRounds = 10;
@@ -56,14 +58,33 @@ router.post("/signup", (req, res, next) => {
         lastName,
         email,
         phone,
-        password: hashedPassword
+        password: hashedPassword,
+        emailToken: crypto.randomBytes(64).toString("hex"),
+        passwordResetToken: crypto.randomBytes(64).toString("hex")
       });
     })
     .then((createdUser) => {
-      const { email, firstName, lastName, phone, _id } = createdUser;
+      const {
+        email,
+        firstName,
+        lastName,
+        phone,
+        emailToken,
+        passwordResetToken,
+        _id
+      } = createdUser;
 
       //   Create a user object without the password ans send to the client
-      const user = { email, firstName, lastName, phone, _id };
+      const user = {
+        email,
+        firstName,
+        lastName,
+        phone,
+        emailToken,
+        passwordResetToken,
+        _id
+      };
+      sendVerificationMail(user);
       res.status(201).json({ user: user });
     })
     .catch((error) => {
