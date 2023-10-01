@@ -72,4 +72,21 @@ router.post("/signup", (req, res, next) => {
     });
 });
 
+// Login route
+router.post("/login", (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (email === "" || password === "") {
+    res.status(400).json({ message: "Provide email and password." });
+    return;
+  }
+
+  //   Check the users collection if a user with the same email exisits
+  User.findOne({ email }).then((foundUser) => {
+    if (!foundUser) {
+      // If
+    }
+  });
+});
+
 module.exports = router;
