@@ -104,11 +104,38 @@ router.post("/login", (req, res, next) => {
   }
 
   //   Check the users collection if a user with the same email exisits
-  User.findOne({ email }).then((foundUser) => {
-    if (!foundUser) {
-      // If
-    }
-  });
+  User.findOne({ email })
+    .then((foundUser) => {
+      if (!foundUser) {
+        res.status(401).json({ message: "User not found" });
+        return;
+      }
+      if (!foundUser.isVerified) {
+        res.status(401).json({
+          message: "Please verify your email to login"
+        });
+        return;
+      }
+
+      const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
+      if (passwordCorrect) {
+        const { _id, email, firstName, lastName } = foundUser;
+        const payload = { _id, email, firstName, lastName };
+        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+          algorithm: "HS256",
+          expiresIn: "6h"
+        });
+        res.status(200).json({ authToken: authToken });
+      } else {
+        res.status(401).json({
+          message: "Unable to authenticate the user. Wrong email or password"
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    });
 });
 
 router.post("/verify-email", async (req, res, next) => {

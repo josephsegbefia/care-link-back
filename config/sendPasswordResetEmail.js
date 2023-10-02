@@ -4,7 +4,7 @@ const sendPasswordResetEmail = (user) => {
   const transporter = createMailTransporter();
 
   const mailOptions = {
-    from: '"TimeApp" <joeelorm@outlook.com>',
+    from: '"CareLink" <joeelorm@outlook.com>',
     to: user.email,
     html: `<p>
             Hello 👋 ${user.firstName}, click the link to reset your password
