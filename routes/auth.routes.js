@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const crypto = require("crypto");
 const { sendVerificationMail } = require("../config/sendVerificationMail");
+const { sendPasswordResetEmail } = require("../config/sendPasswordResetEmail");
 
 const router = express.Router();
 const saltRounds = 10;
@@ -135,6 +136,55 @@ router.post("/verify-email", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json(error.message);
+  }
+});
+
+router.post("/password-reset", async (req, res, next) => {
+  try {
+    const { passwordResetToken, password } = req.body;
+    if (!passwordResetToken) {
+      return res.status(404).json({ message: "Password token not found" });
+    }
+
+    const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+    if (!passwordRegex.test(password)) {
+      res.status(400).json({
+        message:
+          "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter."
+      });
+      return;
+    }
+
+    const user = await User.findOne({ passwordResetToken });
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    user.password = hashedPassword;
+    user.passwordResetToken = crypto.randomBytes(64).toString("hex");
+    await user.save();
+    res.status(200).json({ message: "Password updated!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Internal Server Error");
+  }
+});
+
+router.post("/password-reset-email", async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (user) {
+      sendPasswordResetEmail(user);
+      res.status(200).json({
+        user: user,
+        message: "Password reset email sent to your email"
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: "Email not Found" });
   }
 });
 
