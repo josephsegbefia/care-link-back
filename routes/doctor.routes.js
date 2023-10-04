@@ -3,7 +3,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Doctor = require("../models/Doctor.model");
 const crypto = require("crypto");
-const { sendVerification } = require("../config/sendVerificationMail");
+const {
+  sendDocVerificationMail
+} = require("../config/sendDocVerificationMail");
 const { sendPasswordReset } = require("../config/sendPasswordResetEmail");
 
 // const { isAuthenticated } = require("./../middleware/jwt.middleware");
@@ -74,6 +76,7 @@ router.post("/doc-signup", (req, res, next) => {
           emailToken,
           passwordResetToken
         };
+        sendDocVerificationMail(doc);
         res.status(201).json({ doc: doc });
       })
       .catch((error) => {
