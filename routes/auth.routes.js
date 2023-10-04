@@ -166,7 +166,7 @@ router.post("/verify-email", async (req, res, next) => {
   }
 });
 
-router.post("/password-reset", async (req, res, next) => {
+router.post("/doc-password-reset", async (req, res, next) => {
   try {
     const { passwordResetToken, password } = req.body;
     if (!passwordResetToken) {
@@ -182,13 +182,13 @@ router.post("/password-reset", async (req, res, next) => {
       return;
     }
 
-    const user = await User.findOne({ passwordResetToken });
+    const doc = await Doctor.findOne({ passwordResetToken });
     const salt = bcrypt.genSaltSync(saltRounds);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    user.password = hashedPassword;
-    user.passwordResetToken = crypto.randomBytes(64).toString("hex");
-    await user.save();
+    doc.password = hashedPassword;
+    doc.passwordResetToken = crypto.randomBytes(64).toString("hex");
+    await doc.save();
     res.status(200).json({ message: "Password updated!" });
   } catch (error) {
     console.log(error);
@@ -196,14 +196,14 @@ router.post("/password-reset", async (req, res, next) => {
   }
 });
 
-router.post("/password-reset-email", async (req, res, next) => {
+router.post("/doc-password-reset-email", async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
-    if (user) {
-      sendPasswordResetEmail(user);
+    const doc = await Doctor.findOne({ email });
+    if (doc) {
+      sendPasswordResetEmail(doc);
       res.status(200).json({
-        user: user,
+        doc: doc,
         message: "Password reset email sent to your email"
       });
     } else {
