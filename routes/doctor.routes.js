@@ -86,4 +86,50 @@ router.post("/doc-signup", (req, res, next) => {
   });
 });
 
+// Post '/auth/doc-login'
+router.post("/doc-login", (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Check if email and password are provided as empty strings
+  if (email === "" || password === "") {
+    res.status(400).json({ message: "Please provide email and password" });
+    return;
+  }
+
+  Doctor.findOne({ email })
+    .then((foundDoc) => {
+      if (!foundDoc) {
+        res.status(401).json({ message: "Doctor does not exist" });
+        return;
+      }
+      //   Remember to uncomment this when frontend is ready
+      //   if (!foundDoc.isVerified) {
+      //     res.status(401).json({
+      //       message:
+      //         "Please verify your account. An email verfication has been sent to your email"
+      //     });
+      //     return;
+      //   }
+
+      const passwordCorrect = bcrypt.compareSync(password, foundDoc.password);
+      if (passwordCorrect) {
+        const { _id, email, firstName, lastName } = foundDoc;
+
+        const payload = { _id, email, firstName, lastName };
+        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+          algorithm: "HS256",
+          expiresIn: "8h"
+        });
+        res.status(200).json({ authToken: authToken });
+      } else {
+        res.status(401).json({
+          message: "Unable to authenticate the user. Wrong email or password"
+        });
+      }
+    })
+    .catch((error) =>
+      res.status(500).json({ message: "Internal Server Error" })
+    );
+});
+
 module.exports = router;
