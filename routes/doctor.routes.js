@@ -65,7 +65,8 @@ router.post("/doc-signup", (req, res, next) => {
           lastName,
           _id,
           emailToken,
-          passwordResetToken
+          passwordResetToken,
+          isApproved
         } = createdDoc;
 
         const doc = {
@@ -74,7 +75,8 @@ router.post("/doc-signup", (req, res, next) => {
           lastName,
           _id,
           emailToken,
-          passwordResetToken
+          passwordResetToken,
+          isApproved
         };
         sendDocVerificationMail(doc);
         res.status(201).json({ doc: doc });
@@ -130,6 +132,38 @@ router.post("/doc-login", (req, res, next) => {
     .catch((error) =>
       res.status(500).json({ message: "Internal Server Error" })
     );
+});
+
+// Verify doctors email
+router.post("/doc-verify-email", async (req, res, next) => {
+  try {
+    const emailToken = req.body.emailToken;
+    if (!emailToken)
+      return res
+        .status(404)
+        .json({ message: "Email verification token not found." });
+
+    const doc = await Doctor.findOne({ emailToken });
+    if (doc) {
+      doc.emailToken = null;
+      doc.isVerified = true;
+      await doc.save();
+
+      res.status(200).json({
+        _id: doc._id,
+        firstName: doc.firstName,
+        lastName: doc.lastName,
+        email: doc.email,
+        isVerified: doc.isVerified,
+        isApproved: doc.isApproved
+      });
+    } else {
+      res.status(404).json("Email verification failed, invalid token");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error.message);
+  }
 });
 
 module.exports = router;
