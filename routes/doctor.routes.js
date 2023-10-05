@@ -152,31 +152,27 @@ router.post("/doc-verify-email", async (req, res, next) => {
 
       await DoctorProfile.create({
         doctor: doc._id,
-        phone: 1234567890,
-        specialty: "e.g cardiology",
-        subSpecialty: "e.g urology",
-        gender: "Male | Female",
-        dob: Date.now(),
-        profilePicUrl: "https://www.google.com",
-        address: "e.g Accra, Ghana",
-        boardCerts: ["Cert1", "Cert2"],
-        boardCertsUrls: [
-          "e.g.",
-          "https://www.cert1.com",
-          "https://www.cert2.com"
-        ],
-        medicalLicenseNum: 123456,
-        medSchAttended: "e.g.KNUST",
-        residencyProg: "e.g KNUST Prog",
-        fellowshipProg: "e.g KNUST Prog",
-        yearGrad: Date.now(),
-        currHospitalAffiliation: "e.g Korle Bu",
-        prevWorkExp: "Mamprobi Poly Clinic",
-        workingHrs: "Monday - Friday",
-        appointmentDays: ["Mon", "Tue", "Wed"],
-        languagesSpoken: ["English", "French"],
+        phone: "1234567890",
+        specialty: "",
+        subSpecialty: "",
+        gender: "",
+        dob: "",
+        profilePicUrl: "",
+        address: "",
+        boardCerts: [],
+        boardCertsUrls: [],
+        medicalLicenseNum: "",
+        medSchAttended: "",
+        residencyProg: "",
+        fellowshipProg: "",
+        yearGrad: "",
+        currHospitalAffiliation: "",
+        prevWorkExp: "",
+        workingHrs: "",
+        appointmentDays: [],
+        languagesSpoken: [],
         patientHistory: [],
-        additionalInfo: "Add anything you would like to share here..."
+        additionalInfo: ""
       });
 
       res.status(200).json({
