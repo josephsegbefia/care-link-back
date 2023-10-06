@@ -80,12 +80,6 @@ router.post("/doc/:docId/profile/:profileId/edit", async (req, res, next) => {
 
     const updatedDocProfile = await docProfile.save();
 
-    // const profileToApprove = await DocProfilesToApprove.findOneAndUpdate(
-    //   {},
-    //   { $push: { docProfileIds: updatedDocProfile._id } },
-    //   { upsert: true, new: true }
-    // );
-
     const profileToApprove = await DocProfilesToApprove.findOne({});
 
     if (
