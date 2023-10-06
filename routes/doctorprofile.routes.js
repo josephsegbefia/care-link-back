@@ -82,6 +82,7 @@ router.post("/doc/:docId/profile/:profileId/edit", async (req, res, next) => {
 
     const profileToApprove = await DocProfilesToApprove.findOne({});
 
+    // console.log(profileToApprove);
     if (
       profileToApprove &&
       !profileToApprove.docProfileIds.includes(updatedDocProfile._id)
@@ -103,6 +104,23 @@ router.post("/doc/:docId/profile/:profileId/edit", async (req, res, next) => {
     console.log(error, "Error updating the profile");
     res.status(500).json({ message: "Internal Server Error" });
   }
+});
+
+// Delete a doctor profile
+
+router.delete("/doc/:docId/profile/:profileId", async (req, res, next) => {
+  try {
+    const { docId, profileId } = req.params;
+
+    const deletedProfile = await DocProfile.findByIdAndDelete(profileId);
+
+    if (!deletedProfile) {
+      return res.status(404).json({ message: "Profile does not exist" });
+    }
+
+    await Doctor.findByIdAndDelete(deletedProfile._id);
+    res.json({ message: "Doctor account and profile deleted successfully" });
+  } catch (error) {}
 });
 
 module.exports = router;

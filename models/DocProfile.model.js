@@ -43,4 +43,4 @@ const docProfileSchema = new Schema(
   }
 );
 
-module.exports = model("DoctorProfile", docProfileSchema);
+module.exports = model("DocProfile", docProfileSchema);

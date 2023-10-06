@@ -9,7 +9,8 @@ const doctorSchema = new Schema(
     password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
     emailToken: { type: String },
-    passwordResetToken: { type: String }
+    passwordResetToken: { type: String },
+    profile: { type: Schema.Types.ObjectId, ref: "DocProfile" }
   },
   {
     timestamps: true

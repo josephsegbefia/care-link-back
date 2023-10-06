@@ -105,14 +105,14 @@ router.post("/doc-login", (req, res, next) => {
         res.status(401).json({ message: "Doctor does not exist" });
         return;
       }
-      //   Remember to uncomment this when frontend is ready
-      //   if (!foundDoc.isVerified) {
-      //     res.status(401).json({
-      //       message:
-      //         "Please verify your account. An email verfication has been sent to your email"
-      //     });
-      //     return;
-      //   }
+      // Remember to uncomment this when frontend is ready
+      if (!foundDoc.isVerified) {
+        res.status(401).json({
+          message:
+            "Please verify your account. An email verfication has been sent to your email"
+        });
+        return;
+      }
 
       const passwordCorrect = bcrypt.compareSync(password, foundDoc.password);
       if (passwordCorrect) {
