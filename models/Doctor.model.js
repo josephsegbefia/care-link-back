@@ -9,8 +9,7 @@ const doctorSchema = new Schema(
     password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
     emailToken: { type: String },
-    passwordResetToken: { type: String },
-    isApproved: { type: Boolean, default: false }
+    passwordResetToken: { type: String }
   },
   {
     timestamps: true

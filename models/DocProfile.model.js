@@ -4,6 +4,7 @@ const { Schema, model } = mongoose;
 const docProfileSchema = new Schema(
   {
     doctor: { type: Schema.Types.ObjectId, ref: "Doctor" },
+    isApproved: { type: Boolean, default: false },
     phone: {
       type: String,
       validate: {
@@ -18,7 +19,7 @@ const docProfileSchema = new Schema(
     subSpecialty: { type: String },
     expYears: { type: Number },
     gender: { type: String },
-    dob: { type: Date },
+    dob: { type: String },
     profilePicUrl: { type: String },
     address: { type: String },
     boardCerts: [{ type: String }],
