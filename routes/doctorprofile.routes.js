@@ -1,8 +1,6 @@
 const express = require("express");
 const Doctor = require("../models/Doctor.model");
 const DocProfile = require("../models/DocProfile.model");
-const DocProfilesToApprove = require("../models/toBeApprovedDocProfile.model");
-const { listen } = require("../app");
 
 const router = express.Router();
 
@@ -80,20 +78,7 @@ router.post("/doc/:docId/profile/:profileId/edit", async (req, res, next) => {
 
     const updatedDocProfile = await docProfile.save();
 
-    const profileToApprove = await DocProfilesToApprove.findOne({});
-
-    // console.log(profileToApprove);
-    if (
-      profileToApprove &&
-      !profileToApprove.docProfileIds.includes(updatedDocProfile._id)
-    ) {
-      // If a profileToApprove document exists and the updatedDocProfile ID is not in the array
-      await DocProfilesToApprove.findOneAndUpdate(
-        {},
-        { $push: { docProfileIds: updatedDocProfile._id } },
-        { upsert: true, new: true }
-      );
-    }
+    // If a profileToApprove document exists and the updatedDocProfile ID is not in the array
 
     res.status(200).json({
       message:
@@ -120,7 +105,9 @@ router.delete("/doc/:docId/profile/:profileId", async (req, res, next) => {
 
     await Doctor.findByIdAndDelete(deletedProfile._id);
     res.json({ message: "Doctor account and profile deleted successfully" });
-  } catch (error) {}
+  } catch (error) {
+    res.status(200).json({ message: "Profile deleted successfully" });
+  }
 });
 
 module.exports = router;
