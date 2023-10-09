@@ -5,6 +5,7 @@ const User = require("../models/User.model");
 const crypto = require("crypto");
 const { sendVerificationMail } = require("../config/sendVerificationMail");
 const { sendPasswordResetEmail } = require("../config/sendPasswordResetEmail");
+const UserProfile = require("../models/UserProfile.model");
 
 const router = express.Router();
 const saltRounds = 10;
@@ -149,6 +150,11 @@ router.post("/verify-email", async (req, res, next) => {
       user.emailToken = null;
       user.isVerified = true;
       await user.save();
+
+      // Add more fields here later
+      await UserProfile.create({
+        user: user._id
+      });
 
       res.status(200).json({
         _id: user._id,
