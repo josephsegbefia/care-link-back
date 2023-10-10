@@ -50,7 +50,7 @@ router.post("/user/:userId/profile/:profileId/edit", async (req, res, next) => {
 // Delete a user profile
 router.delete("/user/:userId/profile/:profileId", async (req, res, next) => {
   try {
-    const { docId, profileId } = req.params;
+    const { userId, profileId } = req.params;
 
     const deletedProfile = await UserProfile.findByIdAndDelete(profileId);
 
@@ -58,12 +58,13 @@ router.delete("/user/:userId/profile/:profileId", async (req, res, next) => {
       return res.status(404).json({ message: "Profile does not exist" });
     }
 
-    await User.findByIdAndDelete(deletedProfile._id);
+    await User.findByIdAndDelete(userId);
     res
       .status(200)
       .json({ message: "User account and profile deleted successfully" });
-  } catch (error) {}
-  res.status(500).json("Internal Server Error");
+  } catch (error) {
+    res.status(500).json("Internal Server Error");
+  }
 });
 
 module.exports = router;
