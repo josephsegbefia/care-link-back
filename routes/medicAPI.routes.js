@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const crypto = require("crypto");
+const UserProfile = require("../models/UserProfile.model");
 
 const router = express.Router();
 const URI = process.env.URI;
@@ -55,5 +56,12 @@ router.get("/symptoms", async (req, res, next) => {
     console.error(error);
     res.status(500).json({ error: "Internal server error" }); // Set an appropriate error status code
   }
+});
+
+router.get("/diagnosis", async (req, res, next) => {
+  try {
+    const token = authString.Token;
+    const diagnosis = await axios.get();
+  } catch (error) {}
 });
 module.exports = router;

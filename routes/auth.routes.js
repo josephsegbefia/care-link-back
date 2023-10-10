@@ -153,7 +153,9 @@ router.post("/verify-email", async (req, res, next) => {
 
       // Add more fields here later
       await UserProfile.create({
-        user: user._id
+        user: user._id,
+        age: "",
+        gender: "Female"
       });
 
       res.status(200).json({
