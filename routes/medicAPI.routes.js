@@ -7,7 +7,7 @@ const URI = process.env.URI;
 const API_KEY = process.env.API_KEY;
 const SECRET_KEY = process.env.SECRET_KEY;
 
-async function makeRequest() {
+async function makeAuthRequest() {
   const secretBytes = Buffer.from(SECRET_KEY, "utf8");
   let computedHashString = "";
 
@@ -15,6 +15,7 @@ async function makeRequest() {
   const dataBytes = Buffer.from(URI, "utf8");
   const computedHash = hmac.update(dataBytes).digest("base64");
   computedHashString = computedHash;
+  const authString = "";
 
   try {
     const response = await axios.post(URI, "", {
@@ -33,7 +34,7 @@ async function makeRequest() {
 }
 router.post("/get-auth", async (req, res, next) => {
   try {
-    const authString = await makeRequest();
+    authString = await makeAuthRequest();
     res.status(200).json(authString);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
