@@ -106,7 +106,7 @@ router.delete("/doc/:docId/profile/:profileId", async (req, res, next) => {
     await Doctor.findByIdAndDelete(deletedProfile._id);
     res.json({ message: "Doctor account and profile deleted successfully" });
   } catch (error) {
-    res.status(200).json({ message: "Profile deleted successfully" });
+    res.status(500).json("Internal Server Error");
   }
 });
 
