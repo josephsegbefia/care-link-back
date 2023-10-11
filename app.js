@@ -27,6 +27,8 @@ const sympRouter = require("./routes/medicAPI.routes");
 app.use("/api", sympRouter);
 const userProfileRouter = require("./routes/userprofile.routes");
 app.use("/api", userProfileRouter);
+const appointmentRouter = require("./routes/appointment.routes");
+app.use("/api", appointmentRouter);
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 

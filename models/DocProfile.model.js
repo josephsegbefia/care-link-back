@@ -36,7 +36,8 @@ const docProfileSchema = new Schema(
     //   ratings: { type: Schema.Types.ObjectId, ref: "Ratings" },
     languagesSpoken: [{ type: String }],
     patientHistory: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    additionalInfo: { type: String }
+    additionalInfo: { type: String },
+    appointments: [{ type: Schema.Types.ObjectId, ref: "Appointment" }]
   },
   {
     timestamps: true

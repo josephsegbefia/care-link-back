@@ -6,7 +6,8 @@ const userProfileSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User" },
     gender: { type: String, enum: ["Male", "Female"] },
-    age: { type: Number }
+    age: { type: Number },
+    appointments: [{ type: Schema.Types.ObjectId, ref: "Appointemnt" }]
   },
   {
     timestamps: true
