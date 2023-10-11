@@ -58,10 +58,31 @@ router.get("/symptoms", async (req, res, next) => {
   }
 });
 
-router.get("/diagnosis", async (req, res, next) => {
+router.post("/user/:profileId/diagnosis", async (req, res, next) => {
   try {
-    const token = authString.Token;
-    const diagnosis = await axios.get();
-  } catch (error) {}
+    const tokenString = await makeAuthRequest();
+    const { profileId } = req.params;
+    const token = tokenString.Token;
+
+    // Ensure that req.body.symptoms is an array
+    const symptoms = Array.isArray(req.body.symptoms) ? req.body.symptoms : [];
+
+    const userProfile = await UserProfile.findOne({ _id: profileId });
+    const yearOfBirth = new Date(Date.now()).getFullYear() - userProfile.age;
+    const gender = userProfile.gender.toLowerCase();
+
+    // Serialize the symptoms array as a JSON-encoded string
+    const symptomsString = JSON.stringify(symptoms);
+
+    const diagnosis = await axios.get(
+      `${API_URI}/diagnosis?token=${token}&language=en-gb&symptoms=${symptomsString}&gender=${gender}&year_of_birth=${yearOfBirth}`
+    );
+
+    res.json(diagnosis.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
+
 module.exports = router;
