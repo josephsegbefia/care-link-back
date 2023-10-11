@@ -78,10 +78,26 @@ router.post("/user/:profileId/diagnosis", async (req, res, next) => {
       `${API_URI}/diagnosis?token=${token}&language=en-gb&symptoms=${symptomsString}&gender=${gender}&year_of_birth=${yearOfBirth}`
     );
 
-    res.json(diagnosis.data);
+    res.status(200).json(diagnosis.data);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Get Specialisations for doctors to choose from
+router.get("/specialisations", async (req, res, next) => {
+  try {
+    const tokenString = await makeAuthRequest();
+    const token = tokenString.Token;
+
+    const specialisations = await axios.get(
+      `${API_URI}/specialisations?token=${token}&language=en-gb`
+    );
+    res.status(200).json(specialisations.data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
