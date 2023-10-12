@@ -38,12 +38,18 @@ router.post("/appointments", async (req, res, next) => {
       date
     });
 
-    await UserProfile.findByIdAndUpdate(user, {
-      $push: { appointments: appointment._id }
-    });
-    await DoctorProfile.findByIdAndUpdate(doctor, {
-      $push: { appointments: appointment._id }
-    });
+    await UserProfile.findOneAndUpdate(
+      { user: user },
+      {
+        $push: { appointments: appointment._id }
+      }
+    );
+    await DoctorProfile.findOneAndUpdate(
+      { doctor: doctor },
+      {
+        $push: { appointments: appointment._id }
+      }
+    );
 
     res.status(200).json({ appointment });
   } catch (error) {
