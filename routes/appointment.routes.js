@@ -73,4 +73,26 @@ router.get("/appointments/:id", async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+router.post("/appointments/:appointmentId/edit", async (req, res, next) => {
+  try {
+    const { appointmentId } = req.params;
+    const { date } = req.body;
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment does not exist" });
+    }
+
+    // Update the date
+    appointment.date = date;
+
+    // Save the updated appointment
+    const updatedAppointment = await appointment.save();
+    res.status(200).json(updatedAppointment);
+  } catch (error) {
+    console.log("Error updating the appointment", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 module.exports = router;
