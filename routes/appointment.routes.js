@@ -95,4 +95,22 @@ router.post("/appointments/:appointmentId/edit", async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+router.delete("/appointment/:appointmentId", async (req, res, next) => {
+  try {
+    const { appointmentId } = req.params;
+
+    const deletedAppointment = await Appointment.findByIdAndDelete(
+      appointmentId
+    );
+
+    if (!deletedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    await UserProfile.findByIdAndUpdate(deletedAppointment._id, {
+      $pull: { appointments: deletedAppointment._id }
+    });
+  } catch (error) {}
+});
 module.exports = router;
